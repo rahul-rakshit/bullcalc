@@ -4,7 +4,6 @@ const defaultBuyFee = "1";
 const defaultSellFee = "1";
 
 class Stonks {
-  currentSharePrice: Decimal;
   executionPrice: Decimal;
   shareCount: Decimal;
   buyFee: Decimal;
@@ -12,7 +11,6 @@ class Stonks {
   maxLoss: Decimal;
 
   constructor(props: CalculationParameters) {
-    this.currentSharePrice = new Decimal(props.currentSharePrice);
     this.executionPrice = new Decimal(props.executionPrice);
     this.shareCount = new Decimal(props.shareCount);
     this.buyFee = new Decimal(props.buyFee ?? defaultBuyFee);

@@ -1,8 +1,7 @@
-import Stonks from "./stonks";
+import Stonks from "./Stonks";
 
 describe("calculateStopOrderPrice", () => {
   const calculationParameters: CalculationParameters = {
-    currentSharePrice: "39.48",
     executionPrice: "39.48",
     shareCount: "2",
     buyFee: "1",
