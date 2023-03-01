@@ -3,11 +3,13 @@ import "./App.css";
 import Stonks from "./stonks/Stonks";
 
 export function App() {
+  const [currentPrice, setCurrentPrice] = useState("0");
   const [executionPrice, setExecutionPrice] = useState("0");
   const [shareCount, setShareCount] = useState("0");
   const [maxLoss, setMaxLoss] = useState("0");
 
   const stonks = new Stonks({
+    currentPrice,
     executionPrice,
     shareCount,
     maxLoss,
@@ -17,6 +19,17 @@ export function App() {
     <>
       <h2>Moo 🐄</h2>
       <form>
+        <fieldset>
+          <label>
+            Current Price
+            <input
+              type="number"
+              onChange={(event) => setCurrentPrice(event.target.value)}
+              value={currentPrice}
+            />
+          </label>
+        </fieldset>
+
         <fieldset>
           <label>
             Execution Price
@@ -53,9 +66,10 @@ export function App() {
         </fieldset>
       </form>
 
-      <p>Stop order price: {stonks.calculateStopOrderPrice()}</p>
+      <p>Stop order price at max loss: {stonks.calculateStopOrderPrice()}</p>
       <p>Effective Buy-in: {stonks.calculateEffectiveBuyIn()}</p>
-      <p>Percent loss: {stonks.calculatePercentLoss()}</p>
+      <p>Initial percent loss: {stonks.calculateInitialPercentLoss()}</p>
+      <p>Percent loss at max loss: {stonks.calculateMaxPercentLoss()}</p>
     </>
   );
 }

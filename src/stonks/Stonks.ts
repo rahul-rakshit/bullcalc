@@ -1,9 +1,11 @@
 import Decimal from "decimal.js";
+import zeroFallback from "../utils/zeroFallBack";
 
 const defaultBuyFee = "1";
 const defaultSellFee = "1";
 
 class Stonks {
+  currentPrice: Decimal;
   executionPrice: Decimal;
   shareCount: Decimal;
   buyFee: Decimal;
@@ -11,11 +13,12 @@ class Stonks {
   maxLoss: Decimal;
 
   constructor(props: CalculationParameters) {
-    this.executionPrice = new Decimal(props.executionPrice);
-    this.shareCount = new Decimal(props.shareCount);
+    this.currentPrice = new Decimal(zeroFallback(props.currentPrice));
+    this.executionPrice = new Decimal(zeroFallback(props.executionPrice));
+    this.shareCount = new Decimal(zeroFallback(props.shareCount));
     this.buyFee = new Decimal(props.buyFee ?? defaultBuyFee);
     this.sellFee = new Decimal(props.sellFee ?? defaultSellFee);
-    this.maxLoss = new Decimal(props.maxLoss);
+    this.maxLoss = new Decimal(zeroFallback(props.maxLoss));
   }
 
   calculateEffectiveBuyIn() {
@@ -33,10 +36,19 @@ class Stonks {
     return effectiveBuyIn.minus(priceDelta).toFixed(2);
   }
 
-  calculatePercentLoss() {
+  calculateMaxPercentLoss() {
     const effectiveBuyIn = new Decimal(this.calculateEffectiveBuyIn());
     const moneyInvested = effectiveBuyIn.times(this.shareCount);
     return this.maxLoss.dividedBy(moneyInvested).times(100).toFixed(2) + "%";
+  }
+
+  calculateInitialPercentLoss() {
+    const effectiveBuyIn = new Decimal(this.calculateEffectiveBuyIn());
+    const moneyInvested = effectiveBuyIn.times(this.shareCount);
+    const worth = this.currentPrice.times(this.shareCount);
+    return (
+      moneyInvested.minus(worth).dividedBy(worth).times(100).toFixed(2) + "%"
+    );
   }
 }
 
